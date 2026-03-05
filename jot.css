@@ -225,6 +225,21 @@ body::after {
   letter-spacing: 0.1em;
 }
 
+input.editor-header-text {
+  font-family: inherit;
+  border: none;
+  background: transparent;
+  outline: none;
+  padding: 0;
+  flex: 1;
+  min-width: 8em;
+  max-width: 100%;
+}
+
+input.editor-header-text:focus {
+  color: var(--text-dim);
+}
+
 textarea {
   flex: 1;
   width: 100%;

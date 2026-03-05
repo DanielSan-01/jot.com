@@ -8,6 +8,7 @@ const COPY_ICON = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><
 const CHECK_ICON = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6l3.5 3.5L11 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
 const editor = document.getElementById('editor');
+const noteName = document.getElementById('noteName');
 const urlDisplay = document.getElementById('urlDisplay');
 const btnCopy = document.getElementById('btnCopy');
 const btnNew = document.getElementById('btnNew');
@@ -22,7 +23,8 @@ let limitToastShown = false;
 
 function syncUrlFromEditor() {
   const text = editor.value;
-  const encoded = encodeNote(text);
+  const name = noteName.value.trim() || 'note.md';
+  const encoded = encodeNote(text, name);
   const fullUrl = encoded ? buildShareUrl(encoded) : location.origin + location.pathname;
   const urlLen = fullUrl.length;
   const overLimit = urlLen > MAX_URL_LENGTH;
@@ -69,9 +71,10 @@ function syncUrlFromEditor() {
 function loadNoteFromHash() {
   const hash = location.hash.slice(1);
   if (hash) {
-    const text = decodeNote(hash);
-    if (text) {
-      editor.value = text;
+    const { name, content } = decodeNote(hash);
+    if (content || name !== 'note.md') {
+      noteName.value = name;
+      editor.value = content;
       syncUrlFromEditor();
       return;
     }
@@ -117,6 +120,7 @@ function askNewNote() {
 
 function startNewNote() {
   editor.value = '';
+  noteName.value = 'note.md';
   history.replaceState(null, '', location.pathname);
   syncUrlFromEditor();
   editor.focus();
@@ -135,6 +139,8 @@ editor.addEventListener('keydown', function (e) {
 });
 
 editor.addEventListener('input', syncUrlFromEditor);
+noteName.addEventListener('input', syncUrlFromEditor);
+noteName.addEventListener('change', syncUrlFromEditor);
 btnCopy.addEventListener('click', copyUrlToClipboard);
 btnNew.addEventListener('click', askNewNote);
 urlDisplay.addEventListener('click', copyUrlToClipboard);
