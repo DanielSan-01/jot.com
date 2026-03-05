@@ -1,4 +1,3 @@
-import { renderMarkdown } from './markdown.js';
 import { encodeNote, decodeNote, buildShareUrl } from './urlStorage.js';
 
 const MAX_URL_LENGTH = 2000;
@@ -9,27 +8,34 @@ const COPY_ICON = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><
 const CHECK_ICON = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6l3.5 3.5L11 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
 const editor = document.getElementById('editor');
-const preview = document.getElementById('preview');
 const urlDisplay = document.getElementById('urlDisplay');
 const btnCopy = document.getElementById('btnCopy');
 const btnNew = document.getElementById('btnNew');
 const introHint = document.getElementById('introHint');
 const toast = document.getElementById('toast');
-const modeEdit = document.getElementById('modeEdit');
-const modePreview = document.getElementById('modePreview');
 const confirmOverlay = document.getElementById('confirmOverlay');
 const confirmOk = document.getElementById('confirmOk');
 const confirmCancel = document.getElementById('confirmCancel');
 
 let toastTimeout = null;
-let showingPreview = false;
+let limitToastShown = false;
 
 function syncUrlFromEditor() {
   const text = editor.value;
   const encoded = encodeNote(text);
   const fullUrl = encoded ? buildShareUrl(encoded) : location.origin + location.pathname;
+  const urlLen = fullUrl.length;
+  const overLimit = urlLen > MAX_URL_LENGTH;
 
-  history.replaceState(null, '', encoded ? `#${encoded}` : location.pathname);
+  if (overLimit && !limitToastShown) {
+    limitToastShown = true;
+    showToast('URL limit reached — copy your note or shorten it to share');
+  }
+  if (!overLimit) limitToastShown = false;
+
+  if (!overLimit) {
+    history.replaceState(null, '', encoded ? `#${encoded}` : location.pathname);
+  }
 
   const hashPreview = encoded
     ? `${encoded.slice(0, 40)}${encoded.length > 40 ? '…' : ''}`
@@ -40,7 +46,6 @@ function syncUrlFromEditor() {
 
   const chars = text.length;
   const lines = text ? text.split('\n').length : 1;
-  const urlLen = fullUrl.length;
   const pct = Math.min(100, Math.round((urlLen / MAX_URL_LENGTH) * 100));
 
   document.getElementById('statChars').textContent = chars;
@@ -59,10 +64,6 @@ function syncUrlFromEditor() {
 
   if (chars > 0) introHint.classList.add('hidden');
   else introHint.classList.remove('hidden');
-
-  if (showingPreview) {
-    preview.innerHTML = renderMarkdown(text);
-  }
 }
 
 function loadNoteFromHash() {
@@ -122,23 +123,6 @@ function startNewNote() {
   confirmOverlay.classList.remove('show');
 }
 
-function setViewMode(mode) {
-  showingPreview = mode === 'preview';
-  if (showingPreview) {
-    editor.style.display = 'none';
-    preview.style.display = 'block';
-    preview.innerHTML = renderMarkdown(editor.value);
-    modeEdit.classList.remove('active');
-    modePreview.classList.add('active');
-  } else {
-    editor.style.display = 'block';
-    preview.style.display = 'none';
-    modeEdit.classList.add('active');
-    modePreview.classList.remove('active');
-    editor.focus();
-  }
-}
-
 editor.addEventListener('keydown', function (e) {
   if (e.key === 'Tab') {
     e.preventDefault();
@@ -154,8 +138,6 @@ editor.addEventListener('input', syncUrlFromEditor);
 btnCopy.addEventListener('click', copyUrlToClipboard);
 btnNew.addEventListener('click', askNewNote);
 urlDisplay.addEventListener('click', copyUrlToClipboard);
-modeEdit.addEventListener('click', () => setViewMode('edit'));
-modePreview.addEventListener('click', () => setViewMode('preview'));
 confirmOk.addEventListener('click', startNewNote);
 confirmCancel.addEventListener('click', () => confirmOverlay.classList.remove('show'));
 

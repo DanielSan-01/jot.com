@@ -14,9 +14,8 @@
 <div class="app">
   <div class="topbar">
     <a class="logo" href="#">
-      <span class="logo-text">jot.sh</span>
-      <span class="logo-prompt">~ write &amp; share</span>
-      <span class="logo-cursor"></span>
+      <span class="logo-text">jot it down</span>
+      <span class="logo-prompt">~ The URL is the document. No accounts, no login, no friction.</span>
     </a>
     <div class="topbar-actions">
       <button class="btn" id="btnNew" title="New note (Ctrl+Shift+N)">
@@ -35,25 +34,13 @@
     </div>
   </div>
 
-  <div class="url-bar">
-    <span class="url-label">url</span>
-    <div class="url-display" id="urlDisplay" title="Click to copy">
-      <span class="url-base">jot.sh/</span><span class="url-hash" id="urlHashDisplay">#</span>
-    </div>
-  </div>
-
+  
   <div class="editor-wrap">
     <div class="editor-header">
       <span class="editor-header-dot"></span>
       <span class="editor-header-text">note.md</span>
-      <div class="editor-header-right">
-        <div class="mode-toggle">
-          <button class="mode-btn active" id="modeEdit">edit</button>
-          <button class="mode-btn" id="modePreview">preview</button>
-        </div>
-      </div>
     </div>
-
+    
     <div class="editor-relative">
       <div class="intro-hint" id="introHint">
         <div class="intro-hint-title">start typing your note</div>
@@ -64,8 +51,14 @@
         </div>
       </div>
       <textarea id="editor" spellcheck="false"
-        placeholder="# my note&#10;&#10;start typing — the url updates as you write..."></textarea>
-      <div class="preview" id="preview"></div>
+      placeholder="# my note&#10;&#10;start typing — the url updates as you write..."></textarea>
+    </div>
+  </div>
+  
+  <div class="url-bar">
+    <span class="url-label">url</span>
+    <div class="url-display" id="urlDisplay" title="Click to copy">
+      <span class="url-base">jot.sh/</span><span class="url-hash" id="urlHashDisplay">#</span>
     </div>
   </div>
 
