@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>jot.sh</title>
+  <meta name="description" content="Notes that live in the URL. No account. No server. Just write and share.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="jot.css">
+</head>
+<body>
+
+<div class="app">
+  <div class="topbar">
+    <a class="logo" href="#">
+      <span class="logo-text">jot.sh</span>
+      <span class="logo-prompt">~ write &amp; share</span>
+      <span class="logo-cursor"></span>
+    </a>
+    <div class="topbar-actions">
+      <button class="btn" id="btnNew" title="New note (Ctrl+Shift+N)">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+          <path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        new
+      </button>
+      <button class="btn btn-primary" id="btnCopy" title="Copy URL (Ctrl+Shift+C)">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+          <rect x="4" y="4" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.3"/>
+          <path d="M1 8V1h7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        copy url
+      </button>
+    </div>
+  </div>
+
+  <div class="url-bar">
+    <span class="url-label">url</span>
+    <div class="url-display" id="urlDisplay" title="Click to copy">
+      <span class="url-base">jot.sh/</span><span class="url-hash" id="urlHashDisplay">#</span>
+    </div>
+  </div>
+
+  <div class="editor-wrap">
+    <div class="editor-header">
+      <span class="editor-header-dot"></span>
+      <span class="editor-header-text">note.md</span>
+      <div class="editor-header-right">
+        <div class="mode-toggle">
+          <button class="mode-btn active" id="modeEdit">edit</button>
+          <button class="mode-btn" id="modePreview">preview</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="editor-relative">
+      <div class="intro-hint" id="introHint">
+        <div class="intro-hint-title">start typing your note</div>
+        <div class="intro-hint-cmds">
+          <div class="intro-cmd"><kbd>ctrl+shift+c</kbd> copy url</div>
+          <div class="intro-cmd"><kbd>ctrl+shift+n</kbd> new note</div>
+          <div class="intro-cmd"><kbd>tab</kbd> indent</div>
+        </div>
+      </div>
+      <textarea id="editor" spellcheck="false"
+        placeholder="# my note&#10;&#10;start typing — the url updates as you write..."></textarea>
+      <div class="preview" id="preview"></div>
+    </div>
+  </div>
+
+  <div class="statusbar">
+    <div class="stat">
+      <span class="stat-label">chars</span>
+      <span class="stat-value" id="statChars">0</span>
+    </div>
+    <span class="stat-sep">·</span>
+    <div class="stat">
+      <span class="stat-label">lines</span>
+      <span class="stat-value" id="statLines">1</span>
+    </div>
+    <span class="stat-sep">·</span>
+    <div class="stat">
+      <span class="stat-label">url size</span>
+      <span class="stat-value" id="statUrl">0 b</span>
+    </div>
+    <div class="size-bar-wrap">
+      <span class="stat-label" id="statPct" style="font-size:11px;">0%</span>
+      <div class="size-bar">
+        <div class="size-bar-fill" id="sizeFill" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <div class="confirm-title">discard current note?</div>
+    <div class="confirm-body">This will clear your note and reset the URL. Make sure you've copied the URL if you want to keep it.</div>
+    <div class="confirm-actions">
+      <button class="btn" id="confirmCancel">cancel</button>
+      <button class="btn btn-primary" id="confirmOk">discard &amp; new</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
